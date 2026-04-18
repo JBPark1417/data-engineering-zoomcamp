@@ -21,7 +21,27 @@ They are used in many situations:
 - Spark: Analytics engine for large-scale data processing
 - Serverless: AWS Lambda, Google Functions
 
+## repo 만들기
+![image.png](attachment:663df15c-d876-4740-9558-9f9da3029c4a:image.png)
+
+- Visual code 설치 하고 github와 연결
+- 명령어실행
+``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ python -V
+```
+Python 3.12.1
+    
+``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ docker
+```
+    Usage:  docker [OPTIONS] COMMAND
+    
+``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ PS1="> " #앞에 파일경로가 짧아짐, 근데 다른 터미널 열면 안바뀜
+```    
+    >
+```> echo 'PS1="> "' > ~/.bashrc #이렇게 하면 앞으로 모든 작업 다 >만 뜸
+```
+
 ## Basic Docker Commands
+docker는 host머신에서 분리된 환경을 제공한다 
 
 Check Docker version:
 
@@ -32,7 +52,7 @@ docker --version
 Run a simple container:
 
 ```bash
-docker run hello-world
+docker run hello-world #docker instance가 올바르게 구성되었는지 알수 있다.
 ```
 
 Run something more complex:
@@ -41,11 +61,12 @@ Run something more complex:
 docker run ubuntu
 ```
 
-Nothing happens. Need to run it in `-it` mode:
+Nothing happens. Need to run it in `-it` mode:docker안으로 들어가서 앞의 경로가 바뀐다
 
 ```bash
-docker run -it ubuntu
+docker run -it ubuntu 
 ```
+root@8ad045b5d8cd:/#
 
 We don't have `python` there so let's install it:
 
