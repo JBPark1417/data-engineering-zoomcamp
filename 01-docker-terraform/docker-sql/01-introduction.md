@@ -30,7 +30,8 @@ They are used in many situations:
 ```
 Python 3.12.1
     
-``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ docker
+```
+ @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ docker
 ```
     Usage:  docker [OPTIONS] COMMAND
     
