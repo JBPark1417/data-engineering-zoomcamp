@@ -26,7 +26,8 @@ They are used in many situations:
 
 - Visual code 설치 하고 github와 연결
 - 명령어실행
-``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ python -V
+```
+@JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ python -V
 ```
 Python 3.12.1
     
@@ -35,10 +36,12 @@ Python 3.12.1
 ```
     Usage:  docker [OPTIONS] COMMAND
     
-``` @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ PS1="> " #앞에 파일경로가 짧아짐, 근데 다른 터미널 열면 안바뀜
+```
+@JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ PS1="> " #앞에 파일경로가 짧아짐, 근데 다른 터미널 열면 안바뀜
 ```    
     >
-```> echo 'PS1="> "' > ~/.bashrc #이렇게 하면 앞으로 모든 작업 다 >만 뜸
+```
+> echo 'PS1="> "' > ~/.bashrc #이렇게 하면 앞으로 모든 작업 다 >만 뜸
 ```
 
 ## Basic Docker Commands
