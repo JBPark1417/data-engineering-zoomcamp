@@ -1,19 +1,5 @@
 강의 : https://www.youtube.com/watch?v=lP8xXebHmuE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=11
 
-
-28:01 Data engineering overview for building data pipelines
-38:17 Python environment management with UV
-44:16 Creating a custom Docker image with a Dockerfile
-48:08 Setting the ENTRYPOINT for automated container execution
-56:30 Running Postgres in Docker for database management
-1:01:36 Host access to Postgres via container port mapping
-1:17:01 Pandas data processing for CSV schemaless data types
-1:24:51 Optimized data ingestion with chunked reading
-1:36:50 Building a command line interface with Click
-1:48:19 Resolving container communication using Docker networks
-1:59:39 Multi container orchestration with Docker Compose
-
-
 # Introduction to Docker
 
 **[↑ Up](README.md)** | **[← Previous](README.md)** | **[Next →](02-virtual-environment.md)**
@@ -137,17 +123,14 @@ Container: Image를 실제로 실행한 프로세스, 만들어진 음식
 설치함
 
 ## python대신 bash session을 사용하고 싶다면 어떻게 해야하나? → 진입점을 덮어쓸 수 있음
-### 20:46 Data persistence using Docker volume mapping
-
-``` > docker run -it --entrypoint=bash python:3.13.11-slim
 ```
-이제 python:3.13.11-slim를 bash로 access할수 있게 된 것임. 직접 python docker container로 들어가면 python만 실행할 수 있는데 bash로 들어가면하나의 bash 방에 들어가서 파이썬을 쓰는 거라 그 안에서 다른 linux code도 쓸 수 있어 패키지 확인이나 디버깅이나 환경변수 확인이 편함 
-
+> docker run -it --entrypoint=bash python:3.13.11-slim
 ```
-root@0e24939a56fa:/# python -V
-``` 하면 version이 3.13.11로 나오는데 원래는 다른 버전이었음
-```entrypoint=bash
-``` 하면 원래는 python:3.13.11이 자동 실행인데 그걸 bash를 자동실행 하고 해놓고 그 안에서 python을 실행하거나 폴더들 상황보거나 할 수 있게 하는게 entrypoint=bash안하면 ls 명령어 안먹음
+```
+entrypoint=bash
+```
+하면 원래는 python:3.13.11이 자동 실행인데 그걸 bash를 자동실행 하고 해놓고 그 안에서 python을 실행하거나 폴더들 상황보거나 할 수 있게 하는게 entrypoint=bash안하면 ls 명령어 안먹음. 직접 python docker container로 들어가면 python만 실행할 수 있는데 bash로 들어가면하나의 bash 방에 들어가서 파이썬을 쓰는 거라 그 안에서 다른 linux code도 쓸 수 있어 패키지 확인이나 디버깅이나 환경변수 확인이 편함 
+
 
   
 ## Stateless Containers
@@ -212,7 +195,7 @@ docker run -it \
 ```
 
 ## Volumes: 호스트에 있는 파일 docker container에 공유
-
+### 20:46 Data persistence using Docker volume mapping
 So, we know that with docker we can restore any container to its initial state in a reproducible manner. But what about data? A common way to do so is with _volumes_.
 
 test:에 데이터를 좀 만들어 봅시다 
@@ -228,8 +211,13 @@ echo "Hello from host" > file1.txt
 # 원래는 화면에 출력될 내용이 file1.txt에 저장됨
 # > 는 덮어쓰기, 이어쓰고 싶다면 >> 이용
 cat file1.txt #cat file 👉 파일 읽기
-cat ./file2.txt #./ = 현재 디렉토리 (지금 위치), 경로를 명확하게 할 때
+<img width="1063" height="125" alt="image" src="https://github.com/user-attachments/assets/ee2c6dba-a922-421b-a563-559136145da5" />
 ```
+```
+cat ./file2.txt #./ = 현재 디렉토리 (지금 위치), 경로를 명확하게 할 때
+<img width="1063" height="48" alt="image" src="https://github.com/user-attachments/assets/3c696a35-178f-4f1f-ad68-81e634c74bda" />
+```
+
 해당 폴더에 script.py파일 하나 생성하고
 ```
 python [script.py](http://script.py/) #script.py 파일을 Python으로 실행한다
@@ -255,8 +243,11 @@ for filepath in current_dir.iterdir():
         content = filepath.read_text(encoding='utf-8')
         print(f"    Content: {content}")
 ```
+<img width="1063" height="385" alt="image" src="https://github.com/user-attachments/assets/2a2c34db-c979-4334-bfc5-17aa9b961fd6" />
+
 이제 이것을 파이썬 컨테이너에 매핑해 보겠습니다.
 Now let's map this to a Python container:
+한가지 방법은 볼륨을 사용하는 것인데 폴더를 호스트에서도, 컨테이너에서도 사용할 수 있다는 것을 의미합니다. 
 
 ```bash
 docker run -it --rm -v $(pwd)/test:/app/test --entrypoint=bash python:3.9.16-slim
@@ -291,5 +282,8 @@ python list_files.py
 ```
 컨테이너 안에서 호스트 컴퓨터의 파일에 접근할 수 있는 것을 확인하실 수 있을 겁니다!
 You'll see the files from your host machine are accessible in the container!
+<img width="1181" height="306" alt="image" src="https://github.com/user-attachments/assets/f8a259fb-51d9-4fff-97b1-c2fd06b42bac" />
+<img width="1181" height="219" alt="image" src="https://github.com/user-attachments/assets/50c7c64a-5355-4567-8161-7516e3325fa7" />
+
 
 **[↑ Up](README.md)** | **[← Previous](README.md)** | **[Next →](02-virtual-environment.md)**
