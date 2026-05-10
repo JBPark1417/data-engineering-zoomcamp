@@ -2,6 +2,20 @@
 
 **[↑ Up](README.md)** | **[← Previous](01-introduction.md)** | **[Next →](03-dockerizing-pipeline.md)**
 
+https://www.youtube.com/watch?v=lP8xXebHmuE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=11
+28:01 Data engineering overview for building data pipelines
+38:17 Python environment management with UV
+44:16 Creating a custom Docker image with a Dockerfile
+48:08 Setting the ENTRYPOINT for automated container execution
+56:30 Running Postgres in Docker for database management
+1:01:36 Host access to Postgres via container port mapping
+1:17:01 Pandas data processing for CSV schemaless data types
+1:24:51 Optimized data ingestion with chunked reading
+1:36:50 Building a command line interface with Click
+1:48:19 Resolving container communication using Docker networks
+1:59:39 Multi container orchestration with Docker Compose
+
+
 A **data pipeline** is a service that receives data as input and outputs more data. For example, reading a CSV file, transforming the data somehow and storing it as a table in a PostgreSQL database.
 
 ```mermaid
