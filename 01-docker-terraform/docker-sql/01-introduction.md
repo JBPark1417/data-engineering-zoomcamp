@@ -1,3 +1,19 @@
+강의 : https://www.youtube.com/watch?v=lP8xXebHmuE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=11
+
+
+28:01 Data engineering overview for building data pipelines
+38:17 Python environment management with UV
+44:16 Creating a custom Docker image with a Dockerfile
+48:08 Setting the ENTRYPOINT for automated container execution
+56:30 Running Postgres in Docker for database management
+1:01:36 Host access to Postgres via container port mapping
+1:17:01 Pandas data processing for CSV schemaless data types
+1:24:51 Optimized data ingestion with chunked reading
+1:36:50 Building a command line interface with Click
+1:48:19 Resolving container communication using Docker networks
+1:59:39 Multi container orchestration with Docker Compose
+
+
 # Introduction to Docker
 
 **[↑ Up](README.md)** | **[← Previous](README.md)** | **[Next →](02-virtual-environment.md)**
@@ -22,23 +38,31 @@ They are used in many situations:
 - Serverless: AWS Lambda, Google Functions
 
 ## repo 만들기
-![image.png](attachment:663df15c-d876-4740-9558-9f9da3029c4a:image.png)
-
+### 00:00 Docker and Python prerequisites for the workshop
+도커와 Python을 설치해야 하고 github account를 만들어야 한다. 
+- git hub에서 repository 만들기 
+<img width="1207" height="437" alt="image" src="https://github.com/user-attachments/assets/5c478b62-eeed-45ce-b292-33a92fad9ae2" />
+<img width="1207" height="508" alt="image" src="https://github.com/user-attachments/assets/2be30010-2670-4bfd-97aa-02fa0eb7435f" />
+    - 난 data-engineering-learning repo만들었음
+    - open in VS code를 권장함
 - Visual code 설치 하고 github와 연결
 - 명령어실행
 ```
 @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ python -V
 ```
-Python 3.12.1
+<img width="758" height="52" alt="image" src="https://github.com/user-attachments/assets/ce21db94-41a5-497a-ae97-e8fefe26ef77" />
+
     
 ```
  @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ docker
 ```
-    Usage:  docker [OPTIONS] COMMAND
+<img width="758" height="463" alt="image" src="https://github.com/user-attachments/assets/57787d15-3cc2-46ed-a746-a374fcdfc482" />
+
     
 ```
 @JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ PS1="> " #앞에 파일경로가 짧아짐, 근데 다른 터미널 열면 안바뀜
 ```
+<img width="777" height="48" alt="image" src="https://github.com/user-attachments/assets/471bd42f-262d-46c7-a37c-4112766453c8" />
 
     >
 
@@ -47,32 +71,40 @@ Python 3.12.1
 ```
 
 ## Basic Docker Commands
+### 강의 09:33 Core definition of Docker containerization
+### 강의 11:42 Docker container isolation and stateless behavior
 docker는 host머신에서 분리된 환경을 제공한다 
 
+
+먼저 docker가 제대로 설치되어 있는지 확인 
 Check Docker version:
 
 ```bash
 docker --version
 ```
 
-Run a simple container:
-
+### Run a simple container:
+강의 12:12 First Docker command testing Docker run hello world
 ```bash
 docker run hello-world #docker instance가 올바르게 구성되었는지 알수 있다.
 ```
+<img width="860" height="342" alt="image" src="https://github.com/user-attachments/assets/14c57812-0147-476f-962f-fac60d7c7cea" />
 
 Run something more complex:
 
 ```bash
 docker run ubuntu
 ```
-
+<img width="860" height="174" alt="image" src="https://github.com/user-attachments/assets/e7403589-b35b-4ffc-85f5-bc7578d30386" />
+ubuntu가 다운로드만 되고 아무일도 일어나지 않는다. 
 Nothing happens. Need to run it in `-it` mode. `-it` 하면 docker안으로 들어가서 앞의 경로가 바뀐다
 
+### 14:45 Understanding stateless containers and Docker image snapshots 
 ```bash
 docker run -it ubuntu 
 ```
 root@8ad045b5d8cd:/#
+<img width="848" height="50" alt="image" src="https://github.com/user-attachments/assets/c42efe43-b0fa-4df1-a6bc-2f7b3158e006" />
 
 
 우리가 하려는건 docker안에 들어가서 별도로 작업하려는거임
@@ -84,18 +116,33 @@ root@8ad045b5d8cd:/# apt update
 root@8ad045b5d8cd:/# apt install python3
 python3 -V
 ```
+root@45531c9a111e:/# python3 -V
+Python 3.14.4
+<img width="653" height="50" alt="image" src="https://github.com/user-attachments/assets/dd22e795-c11b-4027-9c65-c8287ea133b4" />
+
 ctr+D하면 원래 host machine으로 돌아감
+host에서 python3 -V 하면 다른 버전이 나옴. 왜냐면 host와 docker에 깔린게 다르기 때문임
+@JBPark1417 ➜ /workspaces/data-engineering-learning (main) $ python3 -V            
+Python 3.12.1
+<img width="727" height="49" alt="image" src="https://github.com/user-attachments/assets/2e909f01-6ad2-44ea-87ae-fe88dfb1eb1d" />
+
+Docker Image: 앱 실행에 필요한 모든 파일과 설정을 묶은 읽기 전용 패키지, 레시피
+Container: Image를 실제로 실행한 프로세스, 만들어진 음식
 
 ```
 > docker run -it python:3.13.11
 > docker run -it python:3.13.11-slim 더 슬림한 버전으로 해당 이미지 열면 빨리 작동
 ```
+<img width="923" height="364" alt="image" src="https://github.com/user-attachments/assets/b62b2b70-ab32-45be-bf97-eead24bc3c96" />
+설치함
 
 ## python대신 bash session을 사용하고 싶다면 어떻게 해야하나? → 진입점을 덮어쓸 수 있음
+### 20:46 Data persistence using Docker volume mapping
 
 ``` > docker run -it --entrypoint=bash python:3.13.11-slim
 ```
-이제 python:3.13.11-slim를 bash로 access할수 있게 된 것임
+이제 python:3.13.11-slim를 bash로 access할수 있게 된 것임. 직접 python docker container로 들어가면 python만 실행할 수 있는데 bash로 들어가면하나의 bash 방에 들어가서 파이썬을 쓰는 거라 그 안에서 다른 linux code도 쓸 수 있어 패키지 확인이나 디버깅이나 환경변수 확인이 편함 
+
 ```
 root@0e24939a56fa:/# python -V
 ``` 하면 version이 3.13.11로 나오는데 원래는 다른 버전이었음
