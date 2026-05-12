@@ -161,6 +161,26 @@ test폴더의 gitignore 파일 열어서
 ```
 추가
 <img width="1096" height="554" alt="image" src="https://github.com/user-attachments/assets/47c2525d-5247-4445-826f-12dbf43f2926" />
+🔍 Parquet 파일이란?
+Apache Parquet 는: 대용량 데이터 저장 포맷,컬럼 기반(columnar),압축 효율 좋음,데이터 분석에서 많이 사용
 
+주로:Spark,Pandas,Airflow,Databricks 같은 환경에서 생성됨
+
+🚨 왜 Git에 안 올리냐?
+1️⃣ 파일 크기 큼 
+Parquet는 데이터 파일이라:수 MB ~ 수 GB 흔한데 Git은 큰 binary 데이터 관리에 부적합
+
+2️⃣ 변경(diff) 추적 불가
+Git은 텍스트 기반 비교에 강함
+예:print("hello")→ 변경 추적 잘 됨
+하지만 parquet는 binary라: binary blob changed밖에 못 봄
+
+3️⃣ 자동 생성 파일인 경우 많음
+예:data/output.parquet
+tmp/result.parquet
+cache/table.parquet
+👉 실행할 때마다 새로 생성 즉: reproducible artifact, source of truth 아님,
+4️⃣ Git repo 비대화
+Parquet 계속 commit하면:.git size 폭증 clone 느려짐
 
 **[↑ Up](README.md)** | **[← Previous](01-introduction.md)** | **[Next →](03-dockerizing-pipeline.md)**
