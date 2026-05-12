@@ -183,4 +183,10 @@ cache/table.parquet
 4️⃣ Git repo 비대화
 Parquet 계속 commit하면:.git size 폭증 clone 느려짐
 
+
+마지막으로 
+git status
+git add .
+git commit -m 'pipeline'   하고 마무리
+
 **[↑ Up](README.md)** | **[← Previous](01-introduction.md)** | **[Next →](03-dockerizing-pipeline.md)**
