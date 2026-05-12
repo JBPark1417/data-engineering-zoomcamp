@@ -4,16 +4,7 @@
 
 https://www.youtube.com/watch?v=lP8xXebHmuE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=11
 28:01 Data engineering overview for building data pipelines
-38:17 Python environment management with UV
-44:16 Creating a custom Docker image with a Dockerfile
-48:08 Setting the ENTRYPOINT for automated container execution
-56:30 Running Postgres in Docker for database management
-1:01:36 Host access to Postgres via container port mapping
-1:17:01 Pandas data processing for CSV schemaless data types
-1:24:51 Optimized data ingestion with chunked reading
-1:36:50 Building a command line interface with Click
-1:48:19 Resolving container communication using Docker networks
-1:59:39 Multi container orchestration with Docker Compose
+
 
 데이터 파이프라인은 데이터를 입력으로 받아 더 많은 데이터를 출력하는 서비스입니다. 예를 들어 CSV 파일을 읽어 데이터를 변환한 후 PostgreSQL 데이터베이스의 테이블 형태로 저장하는 것이 데이터 파이프라인의 한 예입니다.
 A **data pipeline** is a service that receives data as input and outputs more data. For example, reading a CSV file, transforming the data somehow and storing it as a table in a PostgreSQL database.
@@ -36,8 +27,22 @@ pandas를 사용하여 데이터를 변환하고 정리합니다.- Transform and
 ## 간단한 파이프라인 생성 Creating a Simple Pipeline
 
 예제 파이프라인을 만들어 보겠습니다. 먼저 디렉토리를 생성 pipeline하고 그 안에 파일을 생성합니다 pipeline.py.
-Let's create an example pipeline. First, create a directory `pipeline` and inside, create a file  `pipeline.py`:
+Let's create an example pipeline.  First, create a directory `pipeline` and inside, create a file  `pipeline.py`:
+<img width="1181" height="219" alt="image" src="https://github.com/user-attachments/assets/6c405e52-8bd8-406d-8cb3-8c16d73071f8" />
+pipeline 폴더 안에 pipeline.py 파일 추가
 
+<img width="1181" height="501" alt="image" src="https://github.com/user-attachments/assets/38708f88-a0cd-4f79-9b03-ce015c14b0e3" />
+파일에 
+
+```import sys
+print('hello pipeline')
+```
+저장하고 터미널에서 해당 폴더 들어가서
+python ./pipeline.py 하면 파일의 내용 실행됨
+
+
+<img width="1181" height="564" alt="image" src="https://github.com/user-attachments/assets/a290a01d-adfe-4686-b586-610a27aae6de" />
+파일 내용을 다음으로 바꾸고 터미널에 python ./pipeline.py 12 하면 
 ```python
 import sys
 print("arguments", sys.argv)
@@ -45,6 +50,14 @@ print("arguments", sys.argv)
 day = int(sys.argv[1])
 print(f"Running pipeline for day {day}")
 ```
+```
+@JBPark1417 ➜ /workspaces/data-engineering-learning/test/pipeline (main) $ python ./pipeline.py 12 #12를 argument로 넣는것이라함
+arguments ['./pipeline.py', '12']
+Running pipeline for day 12
+```
+
+
+
 이제 팬더스를 추가해 보겠습니다.
 Now let's add pandas:
 
@@ -74,6 +87,7 @@ But this installs it globally on your system. This can cause conflicts if differ
 대신, 우리는 가상 환경 , 즉 이 프로젝트의 종속성을 다른 프로젝트 및 시스템 Python과 분리하는 격리된 Python 환경을 사용하려고 합니다 .
 Instead, we want to use a **virtual environment** - an isolated Python environment that keeps dependencies for this project separate from other projects and from your system Python.
 
+38:17 Python environment management with UV
 ## uv - 최신 파이썬 패키지 관리자를 사용합니다. Using uv - Modern Python Package Manager
 uv우리는 Rust로 작성된 최신 고속 Python 패키지 및 프로젝트 관리 도구인 `pip`을 사용할 것입니다 . `pip`은 pip보다 훨씬 빠르고 가상 환경을 자동으로 처리합니다.
 We'll use `uv` - a modern, fast Python package and project manager written in Rust. It's much faster than pip and handles virtual environments automatically.
@@ -87,6 +101,8 @@ pip install uv
 ```bash
 uv init --python=3.13
 ```
+위 명령어로 init하면 폴더가 이렇게 바뀜 
+<img width="259" height="303" alt="image" src="https://github.com/user-attachments/assets/391f6854-b6c2-40d6-8699-74d5c7f6ef32" />
 
 pyproject.toml이렇게 하면 종속성 관리를 위한 파일과 또 다른 파일이 생성됩니다 .python-version. 
 This creates a `pyproject.toml` file for managing dependencies and a `.python-version` file.
@@ -100,18 +116,26 @@ uv run python -V
 which python        # System Python
 python -V
 ```
+<img width="983" height="90" alt="image" src="https://github.com/user-attachments/assets/afab2a61-6774-43e2-94a9-b4ad287758b1" />
+
+<img width="983" height="130" alt="image" src="https://github.com/user-attachments/assets/812654a2-c711-4ad1-a658-04c1f71a7267" />
 
 보시면 아시겠지만, 두 제품은 uv run격리된 환경을 사용합니다. You'll see they're different - `uv run` uses the isolated environment.
 
 ### 종속성 추가 Adding Dependencies
 
 이제 팬더스를 추가해 보겠습니다. Now let's add pandas:
+pyproject.toml파일이 이랬는데 
+<img width="983" height="290" alt="image" src="https://github.com/user-attachments/assets/3bd2aa31-4d16-4a6d-808a-cef533604daf" />
+
 
 ```bash
 uv add pandas pyarrow
 ```
 
 이렇게 하면 pandas가 사용자 환경에 추가되고 pyproject.toml가상 환경에 설치됩니다. This adds pandas to your `pyproject.toml` and installs it in the virtual environment.
+<img width="983" height="341" alt="image" src="https://github.com/user-attachments/assets/411a4b6c-077e-49f6-8521-25b171c5630a" />
+
 
 ### 파이프라인 실행 Running the Pipeline
 
@@ -120,6 +144,7 @@ uv add pandas pyarrow
 ```bash
 uv run python pipeline.py 10
 ```
+<img width="1096" height="132" alt="image" src="https://github.com/user-attachments/assets/cfa97ce3-a2aa-477a-9e7b-95627ba024b2" />
 
 두고 보면 알겠죠: We will see:
 
@@ -130,9 +155,12 @@ uv run python pipeline.py 10
 
 이 스크립트는 바이너리(parquet) 파일을 생성하므로, 실수로 Git에 커밋하지 않도록 parquet 확장자를 추가해 두겠습니다 .gitignore.
 This script produces a binary (parquet) file, so let's make sure we don't accidentally commit it to git by adding parquet extensions to `.gitignore`:
-
+test폴더의 gitignore 파일 열어서 
 ```
 *.parquet
 ```
+추가
+<img width="1096" height="554" alt="image" src="https://github.com/user-attachments/assets/47c2525d-5247-4445-826f-12dbf43f2926" />
+
 
 **[↑ Up](README.md)** | **[← Previous](01-introduction.md)** | **[Next →](03-dockerizing-pipeline.md)**
