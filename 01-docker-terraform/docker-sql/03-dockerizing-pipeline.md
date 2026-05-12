@@ -4,9 +4,11 @@
 
 이제 스크립트를 컨테이너화해 보겠습니다. 다음 Dockerfile파일을 생성하세요.
 Now let's containerize the script. Create the following `Dockerfile` file:
+<img width="1096" height="554" alt="image" src="https://github.com/user-attachments/assets/4da95f8f-4c12-4743-8611-eaf11cb10a00" />
+
 
 ## pip를 사용한 간단한 Dockerfile Simple Dockerfile with pip
-
+아래 내용 Dockerfile파일안에 저장하고 
 ```dockerfile
 # base Docker image that we will build on
 FROM python:3.13.11-slim
@@ -23,6 +25,16 @@ COPY pipeline.py pipeline.py
 # in this example, we will just run the script
 ENTRYPOINT ["python", "pipeline.py"]
 ```
+```
+cd ./pipeline/
+docker run -t test:pandas .
+```
+<img width="1441" height="586" alt="image" src="https://github.com/user-attachments/assets/e688a0da-7192-4033-b13a-57ef40bbe9e1" />
+오류 나므로 
+```
+docker build -t test:pandas .
+```
+를 먼저 한다. 
 
 설명:**Explanation:**
 - `FROM`: Base image (Python 3.13) 기본 이미지 (파이썬 3.13)
@@ -34,6 +46,9 @@ ENTRYPOINT ["python", "pipeline.py"]
 ### 빌드 및 실행 Build and Run
 
 이미지를 만들어 봅시다: Let's build the image:
+<img width="1199" height="261" alt="image" src="https://github.com/user-attachments/assets/b1479f46-bdc4-4967-bc60-1d2fe9cbc4e3" />
+
+<img width="916" height="234" alt="image" src="https://github.com/user-attachments/assets/97a12d9a-9ef6-40b8-942e-64bc0252c387" />
 
 ```bash
 docker build -t test:pandas .
