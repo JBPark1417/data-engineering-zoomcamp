@@ -23,7 +23,7 @@ COPY pipeline.py pipeline.py
 
 # define what to do first when the container runs
 # in this example, we will just run the script
-ENTRYPOINT ["python", "pipeline.py"]
+# ENTRYPOINT ["python", "pipeline.py"]
 ```
 ```
 cd ./pipeline/
@@ -57,12 +57,42 @@ docker build -t test:pandas .
 * 이미지 이름은 test이고 태그는 입니다 pandas. 태그가 지정되지 않으면 기본값인 로 사용됩니다 latest
 * The image name will be `test` and its tag will be `pandas`. If the tag isn't specified it will default to `latest`.
 
+
+
 이제 컨테이너를 실행하고 인수를 전달하여 파이프라인이 해당 인수를 받을 수 있도록 할 수 있습니다.
 We can now run the container and pass an argument to it, so that our pipeline will receive it:
+<img width="916" height="468" alt="image" src="https://github.com/user-attachments/assets/707469d7-3110-4dd4-9b7c-bbd6ab8d982c" />
+Dockerfile에 14행 추가하고 
+```Dockerfile
+# base Docker image that we will build on
+FROM python:3.13.11-slim
+
+# set up our image by installing prerequisites; pandas in this case
+RUN pip install pandas pyarrow
+
+# set up the working directory inside the container
+WORKDIR /app
+# copy the script to the container. 1st name is source file, 2nd is destination
+COPY pipeline.py pipeline.py
+
+# define what to do first when the container runs
+# in this example, we will just run the script
+ENTRYPOINT ["python", "pipeline.py"]
+```
+
+
+```
+@JBPark1417 ➜ /workspaces/data-engineering-learning/test/pipeline (main) $ docker build -t test:pandas .
+JBPark1417 ➜ /workspaces/data-engineering-learning/test/pipeline (main) $ docker run -it --rm test:pandas 12
+```
+하면 컨테이너에 들어가서 실행한 거랑 같은 결과 나옴. 
+14행 추가 전에는 docker run -it --rm test:pandas 12 안 먹음
+<img width="1133" height="852" alt="image" src="https://github.com/user-attachments/assets/205dd180-b672-4cbf-822f-d6e39ac6373a" />
 
 ```bash
 docker run -it test:pandas some_number
 ```
+<img width="897" height="493" alt="image" src="https://github.com/user-attachments/assets/e619030c-8887-48af-ad9a-256dd0db7868" />
 
 파이프라인 스크립트를 단독으로 실행했을 때와 동일한 출력이 나와야 합니다.
 You should get the same output you did when you ran the pipeline script by itself.
@@ -73,6 +103,65 @@ You should get the same output you did when you ran the pipeline script by itsel
 ## uv를 사용한 Dockerfile Dockerfile with uv
 
 uv는 어때요? pip 대신 uv를 사용해 봅시다. What about uv? Let's use it instead of using pip:
+dockerfile을 아래와 같이 업데이트 하고 
+```dockerfile
+# Start with slim Python 3.13 image
+FROM python:3.13.10-slim
+
+# Copy uv binary from official uv image (multi-stage build pattern)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+# Set working directory
+WORKDIR /app
+
+# Add virtual environment to PATH so we can use installed packages
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy dependency files first (better layer caching)
+COPY "pyproject.toml" "uv.lock" ".python-version" ./
+# Install dependencies from lock file (ensures reproducible builds)
+#RUN uv sync --locked
+
+# Copy application code
+#COPY pipeline.py pipeline.py
+
+# Set entry point
+#ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
+```
+
+JBPark1417 ➜ /workspaces/data-engineering-learning/test/pipeline (main) $ docker build -t test:pandas .
+<img width="1135" height="488" alt="image" src="https://github.com/user-attachments/assets/a3ad9254-5d89-4d4e-a0d2-e747d95c7659" />
+<img width="1185" height="147" alt="image" src="https://github.com/user-attachments/assets/42f2b02a-dcc2-44b0-957e-de43149ab01c" />
+<img width="1185" height="115" alt="image" src="https://github.com/user-attachments/assets/965287d9-6b60-49fc-9737-fb1243056ae9" />
+pyproject.toml과 uv.lock생긴걸 확인할 수 있다. 
+
+
+```dockerfile
+# Start with slim Python 3.13 image
+FROM python:3.13.10-slim
+
+# Copy uv binary from official uv image (multi-stage build pattern)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+# Set working directory
+WORKDIR /app
+
+# Add virtual environment to PATH so we can use installed packages
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy dependency files first (better layer caching)
+COPY "pyproject.toml" "uv.lock" ".python-version" ./
+# Install dependencies from lock file (ensures reproducible builds)
+RUN uv sync --locked
+
+# Copy application code
+#COPY pipeline.py pipeline.py
+
+# Set entry point
+#ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
+```
+RUN uv sync --locked를 추가하고 돌리면 
+<img width="1185" height="147" alt="image" src="https://github.com/user-attachments/assets/f7355a47-885c-4af7-abfa-b2b629ec0dbb" />
 
 ```dockerfile
 # Start with slim Python 3.13 image
@@ -98,5 +187,14 @@ COPY pipeline.py pipeline.py
 # Set entry point
 ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
 ```
+<img width="1185" height="169" alt="image" src="https://github.com/user-attachments/assets/c91b8a80-aa51-4850-84d3-a21fb65a8843" />
+
+<img width="1185" height="169" alt="image" src="https://github.com/user-attachments/assets/40e9058c-e968-46fe-8441-7764cdca6d37" />
+@JBPark1417 ➜ /workspaces/data-engineering-learning/test/pipeline (main) $ docker run -it --rm test:pandas 12
+arguments ['pipeline.py', '12']
+   A  B  day
+0  1  3   12
+1  2  4   12
+Running pipeline for day 12
 
 **[↑ Up](README.md)** | **[← Previous](02-virtual-environment.md)** | **[Next →](04-postgres-docker.md)**
