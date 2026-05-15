@@ -30,9 +30,26 @@ $ cat ./file2.txt #./ = 현재 디렉토리 (지금 위치), 경로를 명확하
 $ python [script.py](http://script.py/) #script.py 파일을 Python으로 실행한다
 
 $ docker run -it --rm -v $(pwd)/test:/app/test --entrypoint=bash python:3.9.16-slim
--v $(pwd)/test:/app/test
-볼륨 매핑,
+-v $(pwd)/test:/app/test의미: 볼륨 매핑,
 의미: 내 컴퓨터 현재 위치/test→컨테이너/app/test,
 내 폴더를 Docker 안에 연결해서 파일을 공유한다
 -v 때문에 host(내 컴퓨터) ↔ container(Docker) 가 연결됨
 $(pwd)👉 현재 경로 출력
+
+python ./pipeline.py #pipeline.py실행
+pip install pandas pyarrow # python 설치
+pip install uv
+uv init --python=3.13 $uv를 사용하여 Python 프로젝트를 초기화
+
+uv run which python  # Python in the virtual environment
+uv run python -V
+
+which python        # System Python
+python -V
+
+uv add pandas pyarrow
+
+uv run python pipeline.py 10
+
+docker build -t test:pandas . `
+
