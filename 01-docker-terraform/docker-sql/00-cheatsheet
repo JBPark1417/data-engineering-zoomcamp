@@ -1,0 +1,38 @@
+$ python -V
+$ python3 -V
+$ docker
+$ PS1="> " #앞에 파일경로가 짧아짐, 근데 다른 터미널 열면 안바뀜
+$ echo 'PS1="> "' > ~/.bashrc #이렇게 하면 앞으로 모든 작업 다 >만 뜸
+$ docker --version
+$ docker run hello-world #docker instance가 올바르게 구성되었는지 알수 있다.
+$ docker run ubuntu #ubuntu가 다운로드만 되고 아무일도 일어나지 않는다
+$ docker run -it ubuntu #docker안으로 들어가서 앞의 경로가 바뀐다
+# apt update 
+# apt install python3 #python 설치
+$ docker run -it python:3.13.11
+$ docker run -it python:3.13.11-slim 더 슬림한 버전으로 해당 이미지 열면 빨리 작동
+$> docker run -it --entrypoint=bash python:3.13.11-slim $python대신 bash session을 사용할 수 있게 진입점을 덮어쓸 수 있음
+$ docker run -it ubuntu
+$ python3 -V
+$ rm -rf / # 전체 삭제 명령. don't run it on your computer!
+$ docker ps -a # 그동안 사용한 컨테이너 리스트 보여줌
+$ docker rm $(docker ps -aq) #현재 열려있는 컨테이너 삭제
+$ docker rm `docker ps -aq` #현재 열려있는 컨테이너 삭제. 위와 같은 코드
+$ docker run -it --rm ubuntu #-rm👉 컨테이너 종료하면 자동 삭제
+
+$ mkdir test #test 폴더 만들기
+$ cd test #test 폴더로 들어가기
+$ touch file1.txt file2.txt file3.txt # touch = 빈 노트 만들기
+$ echo "Hello from host" > file1.txt 
+$ cat file1.txt #cat file 👉 파일 읽기
+
+$ cat ./file2.txt #./ = 현재 디렉토리 (지금 위치), 경로를 명확하게 할 때
+$ python [script.py](http://script.py/) #script.py 파일을 Python으로 실행한다
+
+$ docker run -it --rm -v $(pwd)/test:/app/test --entrypoint=bash python:3.9.16-slim
+-v $(pwd)/test:/app/test
+볼륨 매핑,
+의미: 내 컴퓨터 현재 위치/test→컨테이너/app/test,
+내 폴더를 Docker 안에 연결해서 파일을 공유한다
+-v 때문에 host(내 컴퓨터) ↔ container(Docker) 가 연결됨
+$(pwd)👉 현재 경로 출력
